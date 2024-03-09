@@ -1,28 +1,37 @@
 #!/usr/bin/python3
 """
-fabric scrpt to distribute an arch to web server.
+Fabric script to distribute an archive to web servers
 """
-from fabric.api import put, run, env
+
+from fabric.api import env, put, run
 from os.path import exists
-env.hosts = ['54.160.99.137', '100.26.243.2']
+
+env.hosts = ['100.26.243.2', '54.160.99.137']
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/id_rsa'
 
 
-def do_deploy(archPth):
-    """distributes an arch to web srvr"""
-	if not exists(archPth):
+def do_deploy(archive_path):
+    """Distributes an archive to web servers"""
+    if not exists(archive_path):
         return False
+
     try:
-        fleN = archPth.split("/")[-1]
-        nExt = fleN.split(".")[0]
-        pth = "/data/web_static/releases/"
-        put(archPth, '/tmp/')
-        run('mkdir -p {}{}/'.format(pth, nExt))
-        run('tar -xzf /tmp/{} -C {}{}/'.format(fleN, pth, nExt))
-        run('rm /tmp/{}'.format(fleN))
-        run('mv {0}{1}/web_static/* {0}{1}/'.format(pth, nExt))
-        run('rm -rf {}{}/web_static'.format(pth, nExt))
+        archive_name = archive_path.split('/')[-1]
+        archive_base = archive_name.split('.')[0]
+        remote_path = '/data/web_static/releases/'
+
+        put(archive_path, '/tmp/')
+        run('mkdir -p {}{}/'.format(remote_path, archive_base))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(archive_name, remote_path, archive_base))
+
+        run('rm /tmp/{}'.format(archive_name))
+
         run('rm -rf /data/web_static/current')
-        run('ln -s {}{}/ /data/web_static/current'.format(pth, nExt))
+
+        run('ln -s {}{}/ /data/web_static/current'.format(remote_path, archive_base))
+
+        print("New version deployed!")
         return True
-    except:
+    except Exception:
         return False
