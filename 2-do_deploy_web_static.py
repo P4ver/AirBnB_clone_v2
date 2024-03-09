@@ -23,13 +23,15 @@ def do_deploy(archive_path):
 
         put(archive_path, '/tmp/')
         run('mkdir -p {}{}/'.format(remote_path, archive_base))
-        run('tar -xzf /tmp/{} -C {}{}/'.format(archive_name, remote_path, archive_base))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(
+            archive_name, remote_path, archive_base))
 
         run('rm /tmp/{}'.format(archive_name))
 
         run('rm -rf /data/web_static/current')
 
-        run('ln -s {}{}/ /data/web_static/current'.format(remote_path, archive_base))
+        run('ln -s {}{}/ /data/web_static/current'.format(
+            remote_path, archive_base))
 
         print("New version deployed!")
         return True
