@@ -33,9 +33,9 @@ def python(text="is cool"):
 
 
 @app.route("/number/<int:n>", strict_slashes=False)
-def number(q):
+def number(n):
     """Dplys a num only if 'q' is int"""
-    return "{} is a number".format(q)
+    return "{} is a number".format(n)
 
 
 if __name__ == "__main__":
