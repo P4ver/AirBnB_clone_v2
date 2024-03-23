@@ -37,6 +37,7 @@ def number(n):
     """Dplys a num only if 'q' is int"""
     return "{} is a number".format(n)
 
+
 @app.route("/number_template/<int:n>", strict_slashes=False)
 def number_template(n):
     """Dsplys HTML page only if 'n' is int"""
